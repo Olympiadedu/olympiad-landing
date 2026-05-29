@@ -26,6 +26,8 @@ const nextMonthButton = document.querySelector("#nextMonthButton");
 const applicationForm = document.querySelector("#applicationForm");
 const submitStatus = document.querySelector("#submitStatus");
 const phoneInput = applicationForm.querySelector('input[name="phone"]');
+const completeModal = document.querySelector("#completeModal");
+const completeCloseButton = document.querySelector("#completeCloseButton");
 
 function getSelectedCampus() {
   return database.campuses.find((campus) => campus.id === state.campusId);
@@ -164,17 +166,17 @@ function renderCalendar() {
     const times = getTimesForDate(key);
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "mx-auto flex h-11 w-11 flex-col items-center justify-center rounded-full text-sm text-slate-800";
+    button.className = "cal-day mx-auto flex flex-col items-center justify-center rounded-full text-sm text-slate-800";
     button.textContent = day;
 
     if (times.length > 0) {
-      button.className = "mx-auto flex h-11 w-11 flex-col items-center justify-center rounded-full bg-cyan-50 text-sm font-black text-cyan-700";
+      button.className = "cal-day mx-auto flex flex-col items-center justify-center rounded-full bg-cyan-50 text-sm font-black text-cyan-700";
       button.innerHTML = `${day}<small class="text-[9px] leading-none">응시</small>`;
       button.addEventListener("click", () => selectDate(key));
     }
 
     if (state.date === key) {
-      button.className = "mx-auto flex h-11 w-11 flex-col items-center justify-center rounded-full bg-cyan-500 text-sm font-black text-white";
+      button.className = "cal-day mx-auto flex flex-col items-center justify-center rounded-full bg-cyan-500 text-sm font-black text-white";
       button.innerHTML = `${day}<small class="text-[9px] leading-none">응시</small>`;
     }
 
@@ -234,6 +236,19 @@ function renderTimes() {
 function updateSummary() {
   selectedDateText.textContent = state.date || "날짜 선택 전";
   selectedTimeText.textContent = state.time || "시간 선택 전";
+}
+
+function showCompletionModal() {
+  if (!completeModal) return;
+  completeModal.hidden = false;
+  document.body.style.overflow = "hidden";
+  completeCloseButton?.focus();
+}
+
+function closeCompletionModal() {
+  if (!completeModal) return;
+  completeModal.hidden = true;
+  document.body.style.overflow = "";
 }
 
 function buildPayload(form) {
@@ -336,6 +351,7 @@ applicationForm.addEventListener("submit", async (event) => {
 
   try {
     submitStatus.textContent = await submitApplication(buildPayload(applicationForm));
+    showCompletionModal();
     applicationForm.reset();
     state.campusId = "";
     state.subjectId = "";
@@ -347,6 +363,13 @@ applicationForm.addEventListener("submit", async (event) => {
     updateSummary();
   } catch (error) {
     submitStatus.textContent = error.message;
+  }
+});
+
+completeCloseButton?.addEventListener("click", closeCompletionModal);
+completeModal?.addEventListener("click", (event) => {
+  if (event.target === completeModal) {
+    closeCompletionModal();
   }
 });
 

@@ -135,8 +135,21 @@
         .cal-head { display: flex; align-items: center; justify-content: center; gap: 28px; height: 58px; border-bottom: 1px solid #eee; }
         .cal-head button { width: 36px; height: 36px; font-size: 22px; color: #aaa; border: none; background: none; cursor: pointer; }
         .cal-head strong { font-size: 15px; font-weight: 900; color: #111; }
-        .cal-days-header { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; font-weight: 800; color: #bbb; padding: 10px 0 8px; border-bottom: 1px solid #eee; }
-        .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; padding: 10px 8px; }
+        .cal-days-header { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; font-size: 11px; font-weight: 800; color: #bbb; padding: 10px 0 8px; border-bottom: 1px solid #eee; }
+        .cal-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; padding: 10px 6px; min-width: 0; }
+        .cal-days > span { min-width: 0; }
+        .cal-day {
+            width: clamp(34px, 10.2vw, 44px);
+            height: clamp(34px, 10.2vw, 44px);
+            min-width: 0;
+            line-height: 1;
+        }
+        .cal-day small { font-size: clamp(8px, 2.3vw, 9px); margin-top: 1px; }
+        @media (max-width: 380px) {
+            section { padding-left: 18px; padding-right: 18px; }
+            .form-wrap { padding: 18px; }
+            .cal-days { padding-left: 4px; padding-right: 4px; gap: 1px; }
+        }
 
         /* time */
         .time-wrap { background: #fafafa; border: 1.5px solid #eee; border-radius: 16px; padding: 16px; margin-bottom: 18px; }
@@ -151,6 +164,74 @@
             transition: background 0.15s;
         }
         .submit-btn:hover { background: #222; }
+
+        /* completion modal */
+        .complete-modal[hidden] { display: none; }
+        .complete-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px;
+            background: rgba(10,10,10,0.58);
+        }
+        .complete-box {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 22px;
+            padding: 28px 22px 22px;
+            text-align: center;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.22);
+        }
+        .complete-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f97316;
+            color: #fff;
+            font-size: 24px;
+        }
+        .complete-box h3 { font-size: 24px; font-weight: 900; color: #0a0a0a; margin-bottom: 10px; }
+        .complete-box p { font-size: 15px; font-weight: 700; color: #333; line-height: 1.7; margin-bottom: 18px; }
+        .complete-box .complete-note {
+            background: #fff7ed;
+            border: 2px solid #fb923c;
+            border-radius: 16px;
+            padding: 18px 14px;
+            color: #c2410c;
+            font-size: 21px;
+            font-weight: 900;
+            line-height: 1.45;
+            letter-spacing: 0;
+            box-shadow: 0 10px 24px rgba(249,115,22,0.16);
+        }
+        .complete-box .complete-note strong {
+            display: inline-block;
+            margin-top: 2px;
+            color: #ea580c;
+            font-size: 28px;
+            line-height: 1.2;
+        }
+        .complete-close {
+            width: 100%;
+            margin-top: 18px;
+            border: none;
+            border-radius: 14px;
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 15px;
+            font-weight: 900;
+            padding: 15px;
+            cursor: pointer;
+        }
 
         /* footer */
         footer { background: #0a0a0a; padding: 40px 24px; color: #888; font-size: 13px; }
@@ -245,7 +326,7 @@
         <p class="sec-tag">여름개강 한정 혜택</p>
         <h2 class="sec-title" style="margin-bottom:20px;">2학기 성적 반등의 시작,<br>원인부터 찾아야 합니다</h2>
         <div class="img-wrap">
-            <img src="main_student.jpg" alt="공부하는 학생">
+            <img src="main_counseling.png" alt="학습 진단 상담 장면">
         </div>
         <div class="check-list">
             <div class="check-item"><span class="check-dot"><i class="fa-solid fa-check"></i></span>성적 하락 원인 파악</div>
@@ -403,6 +484,16 @@
 
 </div>
 
+<div id="completeModal" class="complete-modal" hidden>
+    <div class="complete-box" role="dialog" aria-modal="true" aria-labelledby="completeTitle">
+        <div class="complete-icon"><i class="fa-solid fa-check"></i></div>
+        <h3 id="completeTitle">신청완료</h3>
+        <p class="complete-note">이 페이지를 캡쳐해서 오시면<br><strong>3가지 혜택</strong>을 받으실 수 있습니다.</p>
+        <p>캠퍼스에서 신청 내용 확인 후<br>확정 안내 연락을 드릴 예정입니다.</p>
+        <button id="completeCloseButton" type="button" class="complete-close">확인</button>
+    </div>
+</div>
+
 <!-- Sticky CTA Bar -->
 <div class="sticky-cta hidden-bar" id="stickyCta">
     <div class="sticky-cta-text">
@@ -438,8 +529,8 @@
     formObserver.observe(formSection);
 </script>
 
-<script src="config.js?v=20260529-1538"></script>
-<script src="schedule-data.js?v=20260529-1538"></script>
-<script src="application-form.js?v=20260529-1538"></script>
+<script src="config.js?v=20260529-2342"></script>
+<script src="schedule-data.js?v=20260529-2342"></script>
+<script src="application-form.js?v=20260529-2342"></script>
 </body>
 </html>
