@@ -1,4 +1,4 @@
-let database = window.scheduleDatabase;
+﻿let database = window.scheduleDatabase;
 const calendarMonths = [
   { year: 2026, month: 6 },
   { year: 2026, month: 7 },
@@ -79,7 +79,7 @@ async function loadRemoteCampusOptions() {
 }
 
 function initCampusOptions() {
-  campusSelect.innerHTML = '<option value="">캠퍼스명 선택</option>';
+  campusSelect.innerHTML = '<option value="">캠퍼스 선택</option>';
   database.campuses.forEach((campus) => {
     campusSelect.append(new Option(campus.name, campus.id));
   });
@@ -90,7 +90,7 @@ function updateSubjectOptions() {
 
   if (!state.campusId) {
     subjectSelect.disabled = true;
-    subjectSelect.append(new Option("캠퍼스명을 먼저 선택", ""));
+    subjectSelect.append(new Option("캠퍼스를 먼저 선택", ""));
     return;
   }
 
@@ -100,6 +100,7 @@ function updateSubjectOptions() {
     subjectSelect.append(new Option(subject.name, subject.id));
   });
 }
+
 
 function getCurrentMonth() {
   return calendarMonths[state.monthIndex];
@@ -251,6 +252,7 @@ function closeCompletionModal() {
   document.body.style.overflow = "";
 }
 
+
 function buildPayload(form) {
   const formData = new FormData(form);
   const campus = getSelectedCampus();
@@ -372,6 +374,7 @@ completeModal?.addEventListener("click", (event) => {
     closeCompletionModal();
   }
 });
+
 
 async function boot() {
   try {

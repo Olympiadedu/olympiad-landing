@@ -26,8 +26,8 @@ window.scheduleDatabase = {
     },
     {
       id: "songpa",
-      name: "송파캠퍼스",
-      olympiadName: "송파캠퍼스",
+      name: "송파방이캠퍼스",
+      olympiadName: "송파방이캠퍼스",
       location: "서울특별시",
     },
     {
