@@ -115,6 +115,15 @@ function parseDateKey(date) {
   return new Date(year, month - 1, day);
 }
 
+function getTodayKey() {
+  const today = new Date();
+  return dateKey(today.getFullYear(), today.getMonth() + 1, today.getDate());
+}
+
+function isClosedDate(date) {
+  return date <= getTodayKey();
+}
+
 function isSaturdayBlocked(date) {
   const subject = getSelectedSubject();
   const blockedCampusIds = subject?.unavailableSaturdayCampusIds || [];
@@ -122,6 +131,10 @@ function isSaturdayBlocked(date) {
 }
 
 function getTimesForDate(date) {
+  if (isClosedDate(date)) {
+    return [];
+  }
+
   if (!state.campusId || !state.subjectId) {
     return [];
   }
@@ -164,19 +177,24 @@ function renderCalendar() {
 
   for (let day = 1; day <= lastDay; day += 1) {
     const key = dateKey(year, month, day);
+    const isClosed = isClosedDate(key);
     const times = getTimesForDate(key);
     const button = document.createElement("button");
     button.type = "button";
     button.className = "cal-day mx-auto flex flex-col items-center justify-center rounded-full text-sm text-slate-800";
     button.textContent = day;
 
-    if (times.length > 0) {
+    if (isClosed) {
+      button.disabled = true;
+      button.className = "cal-day mx-auto flex flex-col items-center justify-center rounded-full text-sm text-slate-300";
+      button.setAttribute("aria-label", `${key} 선택 불가`);
+    } else if (times.length > 0) {
       button.className = "cal-day mx-auto flex flex-col items-center justify-center rounded-full bg-cyan-50 text-sm font-black text-cyan-700";
       button.innerHTML = `${day}<small class="text-[9px] leading-none">응시</small>`;
       button.addEventListener("click", () => selectDate(key));
     }
 
-    if (state.date === key) {
+    if (!isClosed && state.date === key) {
       button.className = "cal-day mx-auto flex flex-col items-center justify-center rounded-full bg-cyan-500 text-sm font-black text-white";
       button.innerHTML = `${day}<small class="text-[9px] leading-none">응시</small>`;
     }
@@ -186,6 +204,10 @@ function renderCalendar() {
 }
 
 function selectDate(date) {
+  if (isClosedDate(date)) {
+    return;
+  }
+
   state.date = date;
   state.time = "";
   renderCalendar();
