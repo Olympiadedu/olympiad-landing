@@ -125,6 +125,41 @@
         .form-field input::placeholder { color: #bbb; }
         .form-field select:disabled { background: #f5f5f5; color: #bbb; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .campus-contact[hidden] { display: none; }
+        .campus-contact {
+            margin: -4px 0 18px;
+            border: 1.5px solid #fed7aa;
+            border-radius: 16px;
+            background: #fff7ed;
+            padding: 15px;
+        }
+        .campus-contact .name {
+            color: #111;
+            font-size: 15px;
+            font-weight: 900;
+            line-height: 1.45;
+            margin-bottom: 10px;
+        }
+        .campus-contact .phone {
+            color: #c2410c;
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+        .campus-contact .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .campus-contact .actions a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 44px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 900;
+            text-decoration: none;
+        }
+        .campus-contact .map-link { background: #03c75a; color: #fff; }
+        .campus-contact .call-link { background: #0a0a0a; color: #fff; }
         .date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
         .date-box { background: #fafafa; border: 1.5px solid #eee; border-radius: 14px; padding: 12px 14px; }
         .date-box .lbl { font-size: 11px; font-weight: 700; color: #bbb; }
@@ -386,7 +421,7 @@
         </div>
         <p class="steps-note">
             <i class="fa-solid fa-circle-info" style="color:#ccc;margin-right:6px;"></i>
-            모든 혜택은 해당 웹페이지를 캠퍼스에 제시하시면 제공됩니다.
+            모든 혜택은 '신청 완료' 페이지를 캡처하여 캠퍼스에 제시하시면, 확인 후 제공됩니다.
         </p>
     </section>
 
@@ -433,6 +468,21 @@
                 </select>
             </div>
 
+            <div id="campusContactPanel" class="campus-contact" hidden>
+                <div id="campusContactName" class="name"></div>
+                <div id="campusContactPhone" class="phone"></div>
+                <div class="actions">
+                    <a id="campusMapLink" class="map-link" href="#" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        약도 보기
+                    </a>
+                    <a id="campusCallLink" class="call-link" href="#">
+                        <i class="fa-solid fa-phone"></i>
+                        전화 걸기
+                    </a>
+                </div>
+            </div>
+
             <div class="date-row">
                 <div class="date-box">
                     <div class="lbl">희망날짜</div>
@@ -465,7 +515,7 @@
             <input type="hidden" name="referralSource" value="기타">
             <input type="hidden" name="referralDetail" value="랜딩">
 
-            <p class="form-note">※ 해당 일정과 시간은 확정은 아니며, 캠퍼스에서 확정 안내 연락을 드릴 수 있습니다.</p>
+            <p class="form-note">※ 캠퍼스에서 확인을 위해 연락을 드릴 수 있습니다.</p>
             <p id="submitStatus" class="form-status" role="status" aria-live="polite"></p>
 
             <button type="submit" class="submit-btn">
@@ -526,8 +576,8 @@
     formObserver.observe(formSection);
 </script>
 
-<script src="config.js?v=20260616-1140"></script>
-<script src="schedule-data.js?v=20260616-1140"></script>
-<script src="application-form.js?v=20260616-1140"></script>
+<script src="config.js?v=20260617-1128"></script>
+<script src="schedule-data.js?v=20260617-1128"></script>
+<script src="application-form.js?v=20260617-1128"></script>
 </body>
 </html>

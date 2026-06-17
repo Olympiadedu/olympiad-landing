@@ -5,6 +5,42 @@ const calendarMonths = [
 ];
 const weekdayTimes = ["14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
 const saturdayTimes = ["11:00", "12:00", "13:00", "14:00", "15:00"];
+const specialDateTimes = {
+  "2026-07-04": {
+    math: {
+      gwangjin: ["12:00"],
+      seongdong: ["12:00"],
+      dongdaemun: ["12:00"],
+      jungnang: ["12:00"],
+      misa: ["11:00"],
+      songpa: ["11:00"],
+      junggye: ["14:00"],
+    },
+    english: {
+      gwangjin: ["11:00", "14:00"],
+      seongdong: ["11:00"],
+      dongdaemun: ["11:00"],
+      jungnang: ["11:00"],
+    },
+  },
+  "2026-07-11": {
+    math: {
+      gwangjin: ["14:00"],
+      seongdong: ["14:00"],
+      dongdaemun: ["14:00"],
+      jungnang: ["14:00"],
+      misa: ["14:00"],
+      songpa: ["11:00"],
+      junggye: ["14:00"],
+    },
+    english: {
+      gwangjin: ["11:00", "14:00"],
+      seongdong: ["14:00"],
+      dongdaemun: ["14:00"],
+      jungnang: ["14:00"],
+    },
+  },
+};
 
 const state = {
   campusId: "",
@@ -28,6 +64,29 @@ const submitStatus = document.querySelector("#submitStatus");
 const phoneInput = applicationForm.querySelector('input[name="phone"]');
 const completeModal = document.querySelector("#completeModal");
 const completeCloseButton = document.querySelector("#completeCloseButton");
+const campusContactPanel = document.querySelector("#campusContactPanel");
+const campusContactName = document.querySelector("#campusContactName");
+const campusContactPhone = document.querySelector("#campusContactPhone");
+const campusMapLink = document.querySelector("#campusMapLink");
+const campusCallLink = document.querySelector("#campusCallLink");
+
+const campusContactDirectory = {
+  math: {
+    gwangjin: { query: "올림피아드학원 광진캠퍼스", phone: "02)458-0301" },
+    seongdong: { query: "올림피아드학원 성동캠퍼스", phone: "02)2294-7700" },
+    dongdaemun: { query: "올림피아드학원 동대문캠퍼스", phone: "02)2249-0909" },
+    jungnang: { query: "올림피아드학원 중랑캠퍼스", phone: "02)437-3200" },
+    junggye: { query: "유투엠 중계캠퍼스", phone: "02)933-4600" },
+    misa: { query: "유투엠 미사캠퍼스", phone: "031)8027-8833" },
+    songpa: { query: "유투엠 송파방이캠퍼스", phone: "02)406-7077" },
+  },
+  english: {
+    gwangjin: { query: "GLEC어학원 광진캠퍼스", phone: "02)446-0909" },
+    seongdong: { query: "GLEC어학원 성동캠퍼스", phone: "02)2294-0882" },
+    dongdaemun: { query: "GLEC어학원 동대문캠퍼스", phone: "02)2249-9009" },
+    jungnang: { query: "GLEC어학원 중랑캠퍼스", phone: "02)437-9800" },
+  },
+};
 
 function getSelectedCampus() {
   return database.campuses.find((campus) => campus.id === state.campusId);
@@ -38,7 +97,58 @@ function getSelectedSubject() {
 }
 
 function getSubjectsByCampus(campusId) {
-  return database.subjects.filter((subject) => subject.campusIds.includes(campusId));
+  return database.subjects.filter((subject) => {
+    const isCombinedSubject = subject.id === "math_english" || subject.name === "수학+영어";
+    return subject.campusIds.includes(campusId) && !isCombinedSubject;
+  });
+}
+
+function getSubjectContactType(subject) {
+  if (!subject) return "";
+  return subject.id === "english" || subject.name === "영어" ? "english" : "math";
+}
+
+function getContactInfo() {
+  const subject = getSelectedSubject();
+  const contactType = getSubjectContactType(subject);
+  return campusContactDirectory[contactType]?.[state.campusId] || null;
+}
+
+function getSpecialTimesForDate(date) {
+  const subject = getSelectedSubject();
+  const contactType = getSubjectContactType(subject);
+  const specialDate = specialDateTimes[date];
+
+  if (!specialDate) return null;
+
+  return specialDate[contactType]?.[state.campusId] || [];
+}
+
+function getNaverMapSearchUrl(query) {
+  return `https://map.naver.com/p/search/${encodeURIComponent(query)}`;
+}
+
+function getTelUrl(phone) {
+  return `tel:${phone.replace(/\D/g, "")}`;
+}
+
+function updateCampusContact() {
+  const contact = getContactInfo();
+
+  if (!contact) {
+    campusContactPanel.hidden = true;
+    campusContactName.textContent = "";
+    campusContactPhone.textContent = "";
+    campusMapLink.href = "#";
+    campusCallLink.href = "#";
+    return;
+  }
+
+  campusContactName.textContent = contact.query;
+  campusContactPhone.textContent = contact.phone;
+  campusMapLink.href = getNaverMapSearchUrl(contact.query);
+  campusCallLink.href = getTelUrl(contact.phone);
+  campusContactPanel.hidden = false;
 }
 
 function loadJsonp(url) {
@@ -143,6 +253,11 @@ function getTimesForDate(date) {
 
   if (dayOfWeek === 0) {
     return [];
+  }
+
+  const specialTimes = getSpecialTimesForDate(date);
+  if (specialTimes) {
+    return specialTimes;
   }
 
   if (isSaturdayBlocked(date)) {
@@ -335,6 +450,7 @@ campusSelect.addEventListener("change", (event) => {
   state.date = "";
   state.time = "";
   updateSubjectOptions();
+  updateCampusContact();
   renderCalendar();
   renderTimes();
   updateSummary();
@@ -344,6 +460,7 @@ subjectSelect.addEventListener("change", (event) => {
   state.subjectId = event.target.value;
   state.date = "";
   state.time = "";
+  updateCampusContact();
   renderCalendar();
   renderTimes();
   updateSummary();
@@ -382,6 +499,7 @@ applicationForm.addEventListener("submit", async (event) => {
     state.date = "";
     state.time = "";
     updateSubjectOptions();
+    updateCampusContact();
     renderCalendar();
     renderTimes();
     updateSummary();
@@ -407,6 +525,7 @@ async function boot() {
 
   initCampusOptions();
   updateSubjectOptions();
+  updateCampusContact();
   renderCalendar();
   renderTimes();
   updateSummary();
