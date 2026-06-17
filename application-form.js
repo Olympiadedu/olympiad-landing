@@ -62,6 +62,8 @@ const nextMonthButton = document.querySelector("#nextMonthButton");
 const applicationForm = document.querySelector("#applicationForm");
 const submitStatus = document.querySelector("#submitStatus");
 const phoneInput = applicationForm.querySelector('input[name="phone"]');
+const privacyAgree = document.querySelector("#privacyAgree");
+const submitButton = document.querySelector("#submitButton");
 const completeModal = document.querySelector("#completeModal");
 const completeCloseButton = document.querySelector("#completeCloseButton");
 const campusContactPanel = document.querySelector("#campusContactPanel");
@@ -149,6 +151,10 @@ function updateCampusContact() {
   campusMapLink.href = getNaverMapSearchUrl(contact.query);
   campusCallLink.href = getTelUrl(contact.phone);
   campusContactPanel.hidden = false;
+}
+
+function updateSubmitButtonState() {
+  submitButton.disabled = !privacyAgree.checked;
 }
 
 function loadJsonp(url) {
@@ -480,8 +486,15 @@ phoneInput.addEventListener("input", (event) => {
   event.target.value = formatPhoneNumber(event.target.value);
 });
 
+privacyAgree.addEventListener("change", updateSubmitButtonState);
+
 applicationForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (!privacyAgree.checked) {
+    submitStatus.textContent = "개인정보 수집 및 이용에 동의해 주세요.";
+    return;
+  }
 
   if (!state.date || !state.time) {
     submitStatus.textContent = "희망날짜와 희망시를 선택해 주세요.";
@@ -500,6 +513,7 @@ applicationForm.addEventListener("submit", async (event) => {
     state.time = "";
     updateSubjectOptions();
     updateCampusContact();
+    updateSubmitButtonState();
     renderCalendar();
     renderTimes();
     updateSummary();
@@ -526,6 +540,7 @@ async function boot() {
   initCampusOptions();
   updateSubjectOptions();
   updateCampusContact();
+  updateSubmitButtonState();
   renderCalendar();
   renderTimes();
   updateSummary();
