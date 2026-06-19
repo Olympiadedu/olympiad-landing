@@ -125,41 +125,6 @@
         .form-field input::placeholder { color: #bbb; }
         .form-field select:disabled { background: #f5f5f5; color: #bbb; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .campus-contact[hidden] { display: none; }
-        .campus-contact {
-            margin: -4px 0 18px;
-            border: 1.5px solid #fed7aa;
-            border-radius: 16px;
-            background: #fff7ed;
-            padding: 15px;
-        }
-        .campus-contact .name {
-            color: #111;
-            font-size: 15px;
-            font-weight: 900;
-            line-height: 1.45;
-            margin-bottom: 10px;
-        }
-        .campus-contact .phone {
-            color: #c2410c;
-            font-size: 18px;
-            font-weight: 900;
-            margin-bottom: 12px;
-        }
-        .campus-contact .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .campus-contact .actions a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            min-height: 44px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 900;
-            text-decoration: none;
-        }
-        .campus-contact .map-link { background: #03c75a; color: #fff; }
-        .campus-contact .call-link { background: #0a0a0a; color: #fff; }
         .date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
         .date-box { background: #fafafa; border: 1.5px solid #eee; border-radius: 14px; padding: 12px 14px; }
         .date-box .lbl { font-size: 11px; font-weight: 700; color: #bbb; }
@@ -315,9 +280,30 @@
         .footer-info .name { color: #ddd; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
         .footer-copy { margin-top: 16px; padding-top: 16px; border-top: 1px solid #2a2a2a; color: #555; font-size: 12px; }
 
+        /* campus guide */
+        .campus-guide { background: #fff; border-top: 1px solid #eee; padding: 30px 24px; }
+        .campus-guide-title { color: #111; font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+        .campus-guide-desc { color: #777; font-size: 12px; line-height: 1.6; margin-bottom: 16px; }
+        .campus-group { border-top: 1px solid #eee; padding: 13px 0; }
+        .campus-group:first-of-type { border-top: none; padding-top: 0; }
+        .campus-group h3 { color: #111; font-size: 14px; font-weight: 900; margin-bottom: 8px; }
+        .campus-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; }
+        .campus-item { color: #555; font-size: 12px; line-height: 1.45; white-space: nowrap; }
+        .campus-name { color: #222; font-weight: 700; margin-right: 4px; }
+        .campus-phone { color: #444; font-weight: 500; text-decoration: none; }
+        .campus-divider { color: #bbb; margin: 0 4px; }
+        .campus-location {
+            color: #f97316;
+            font-weight: 800;
+            text-decoration: none;
+        }
+        @media (max-width: 430px) {
+            .campus-list { grid-template-columns: 1fr; gap: 5px; }
+        }
+
         /* header */
         .top-header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #eee; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .top-badge { font-size: 11px; background: #ff4040; color: #fff; font-weight: 800; padding: 6px 12px; border-radius: 100px; animation: pulse 2.5s ease-in-out infinite; }
+        .top-badge { display: inline-flex; align-items: center; font-size: 11px; background: #ff4040; color: #fff; font-weight: 800; padding: 6px 12px; border-radius: 100px; animation: pulse 2.5s ease-in-out infinite; text-decoration: none; }
         @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
     </style>
 <!-- Google tag (gtag.js) -->
@@ -336,7 +322,7 @@
     <!-- Header -->
     <header class="top-header">
         <img src="logo_edu.png" alt="올림피아드교육" style="height:30px;object-fit:contain;">
-        <span class="top-badge"><i class="fa-solid fa-bell" style="margin-right:5px;font-size:10px;"></i>여름개강 한정 혜택</span>
+        <a href="#brand-section" class="top-badge"><i class="fa-solid fa-pencil" style="margin-right:5px;font-size:10px;"></i>학력진단평가 신청</a>
     </header>
 
     <!-- Hero -->
@@ -405,7 +391,7 @@
 
     <!-- Image + checklist -->
     <section class="img-section">
-        <p class="sec-tag">여름개강 한정 혜택</p>
+        <p class="sec-tag">올림피아드교육과 함께!</p>
         <h2 class="sec-title" style="margin-bottom:20px;">2학기 성적 반등의 시작,<br>원인부터 찾아야 합니다</h2>
         <div class="img-wrap">
             <img src="main_counseling.png" alt="학습 진단 상담 장면">
@@ -465,7 +451,7 @@
 
     <!-- Application Form -->
     <section class="form-section" id="brand-section">
-        <p class="sec-tag">무료 신청</p>
+        <p class="sec-tag">응시료 전액 지원</p>
         <h2 class="sec-title" style="margin-bottom:8px;">학력진단평가<br>신청하기</h2>
         <p style="font-size:15px;color:#777;margin-bottom:28px;">캠퍼스와 전형과목을 선택하면 응시 가능한 일정이 표시됩니다.</p>
 
@@ -506,32 +492,6 @@
                 </select>
             </div>
 
-            <div id="campusContactPanel" class="campus-contact" hidden>
-                <div id="campusContactName" class="name"></div>
-                <div id="campusContactPhone" class="phone"></div>
-                <div class="actions">
-                    <a id="campusMapLink" class="map-link" href="#" target="_blank" rel="noopener">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                        약도 보기
-                    </a>
-                    <a id="campusCallLink" class="call-link" href="#">
-                        <i class="fa-solid fa-phone"></i>
-                        전화 걸기
-                    </a>
-                </div>
-            </div>
-
-            <div class="date-row">
-                <div class="date-box">
-                    <div class="lbl">희망날짜</div>
-                    <strong id="selectedDateText">날짜 선택 전</strong>
-                </div>
-                <div class="date-box">
-                    <div class="lbl">희망시</div>
-                    <strong id="selectedTimeText">시간 선택 전</strong>
-                </div>
-            </div>
-
             <div class="cal-wrap">
                 <div class="cal-head">
                     <button id="prevMonthButton" type="button" aria-label="이전 달">‹</button>
@@ -545,8 +505,19 @@
             </div>
 
             <div class="time-wrap">
-                <h4>희망시 선택</h4>
+                <h4>희망시간 선택</h4>
                 <div id="timeList" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+            </div>
+
+            <div class="date-row">
+                <div class="date-box">
+                    <div class="lbl">희망날짜</div>
+                    <strong id="selectedDateText">날짜 선택 전</strong>
+                </div>
+                <div class="date-box">
+                    <div class="lbl">희망시간</div>
+                    <strong id="selectedTimeText">시간 선택 전</strong>
+                </div>
             </div>
 
             <input type="hidden" name="region" value="서울특별시">
@@ -581,6 +552,41 @@
                 신청하기 <i class="fa-solid fa-chevron-right" style="margin-left:6px;font-size:13px;"></i>
             </button>
         </form>
+    </section>
+
+    <!-- Campus Guide -->
+    <section class="campus-guide">
+        <h2 class="campus-guide-title">캠퍼스 위치 안내</h2>
+        <p class="campus-guide-desc">가까운 캠퍼스의 위치와 연락처를 확인하실 수 있습니다.</p>
+
+        <div class="campus-group">
+            <h3>올림피아드학원</h3>
+            <div class="campus-list">
+                <div class="campus-item"><span class="campus-name">광진</span><a class="campus-phone" href="tel:024580301">02)458-0301</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/GbDd2W6d" target="_blank" rel="noopener">오시는 길</a></div>
+                <div class="campus-item"><span class="campus-name">성동</span><a class="campus-phone" href="tel:0222947700">02)2294-7700</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/5PV4rDvb" target="_blank" rel="noopener">오시는 길</a></div>
+                <div class="campus-item"><span class="campus-name">동대문</span><a class="campus-phone" href="tel:0222490909">02)2249-0909</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/xq3cEVG8" target="_blank" rel="noopener">오시는 길</a></div>
+                <div class="campus-item"><span class="campus-name">중랑</span><a class="campus-phone" href="tel:024373200">02)437-3200</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/5uIMmPaX" target="_blank" rel="noopener">오시는 길</a></div>
+            </div>
+        </div>
+
+        <div class="campus-group">
+            <h3>GLEC어학원</h3>
+            <div class="campus-list">
+                <div class="campus-item"><span class="campus-name">광진</span><a class="campus-phone" href="tel:024460909">02)446-0909</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/5gFjhuY1" target="_blank" rel="noopener">오시는 길</a></div>
+                <div class="campus-item"><span class="campus-name">성동</span><a class="campus-phone" href="tel:0222940882">02)2294-0882</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/xl057RI3" target="_blank" rel="noopener">오시는 길</a></div>
+                <div class="campus-item"><span class="campus-name">동대문</span><a class="campus-phone" href="tel:0222499009">02)2249-9009</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/FCA2jsLO" target="_blank" rel="noopener">오시는 길</a></div>
+                <div class="campus-item"><span class="campus-name">중랑</span><a class="campus-phone" href="tel:024379800">02)437-9800</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/FhUXFl2q" target="_blank" rel="noopener">오시는 길</a></div>
+            </div>
+        </div>
+
+        <div class="campus-group">
+            <h3>유투엠</h3>
+            <div class="campus-list">
+                <div class="campus-item"><span class="campus-name">중계</span><a class="campus-phone" href="tel:029334600">02)933-4600</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/5Hk0XrZi" target="_blank" rel="noopener">오시는 길</a></div>
+                <div class="campus-item"><span class="campus-name">미사</span><a class="campus-phone" href="tel:03180278833">031)8027-8833</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/5vcEbEtO" target="_blank" rel="noopener">오시는 길</a></div>
+                <div class="campus-item"><span class="campus-name">송파방이</span><a class="campus-phone" href="tel:024067077">02)406-7077</a><span class="campus-divider">/</span><a class="campus-location" href="https://naver.me/5UEPFBXH" target="_blank" rel="noopener">오시는 길</a></div>
+            </div>
+        </div>
     </section>
 
     <!-- Footer -->
@@ -635,8 +641,8 @@
     formObserver.observe(formSection);
 </script>
 
-<script src="config.js?v=20260617-1145"></script>
-<script src="schedule-data.js?v=20260617-1145"></script>
-<script src="application-form.js?v=20260617-1145"></script>
+<script src="config.js?v=20260619-1115"></script>
+<script src="schedule-data.js?v=20260619-1115"></script>
+<script src="application-form.js?v=20260619-1115"></script>
 </body>
 </html>
