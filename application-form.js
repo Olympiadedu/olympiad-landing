@@ -5,6 +5,7 @@ const calendarMonths = [
 ];
 const weekdayTimes = ["14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
 const saturdayTimes = ["11:00", "12:00", "13:00", "14:00", "15:00"];
+const closedDateKeys = ["2026-07-30", "2026-07-31"];
 const specialDateTimes = {
   "2026-07-04": {
     math: {
@@ -188,7 +189,7 @@ function getTodayKey() {
 }
 
 function isClosedDate(date) {
-  return date <= getTodayKey();
+  return date <= getTodayKey() || closedDateKeys.includes(date);
 }
 
 function isSaturdayBlocked(date) {
