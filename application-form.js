@@ -391,12 +391,18 @@ async function submitApplication(payload) {
     throw new Error("config.js에 GAS 웹앱 URL을 입력해 주세요.");
   }
 
-  await fetch(gasWebAppUrl, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(payload),
-  });
+  try {
+    await fetch(gasWebAppUrl, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    if (!String(error?.message || error).includes("Failed to fetch")) {
+      throw error;
+    }
+  }
 
   return "신청 정보가 전송되었습니다.";
 }
