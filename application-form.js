@@ -66,29 +66,6 @@ const privacyAgree = document.querySelector("#privacyAgree");
 const submitButton = document.querySelector("#submitButton");
 const completeModal = document.querySelector("#completeModal");
 const completeCloseButton = document.querySelector("#completeCloseButton");
-const campusContactPanel = document.querySelector("#campusContactPanel");
-const campusContactName = document.querySelector("#campusContactName");
-const campusContactPhone = document.querySelector("#campusContactPhone");
-const campusMapLink = document.querySelector("#campusMapLink");
-const campusCallLink = document.querySelector("#campusCallLink");
-
-const campusContactDirectory = {
-  math: {
-    gwangjin: { query: "올림피아드학원 광진캠퍼스", phone: "02)458-0301" },
-    seongdong: { query: "올림피아드학원 성동캠퍼스", phone: "02)2294-7700" },
-    dongdaemun: { query: "올림피아드학원 동대문캠퍼스", phone: "02)2249-0909" },
-    jungnang: { query: "올림피아드학원 중랑캠퍼스", phone: "02)437-3200" },
-    junggye: { query: "유투엠 중계캠퍼스", phone: "02)933-4600" },
-    misa: { query: "유투엠 미사캠퍼스", phone: "031)8027-8833" },
-    songpa: { query: "유투엠 송파방이캠퍼스", phone: "02)406-7077" },
-  },
-  english: {
-    gwangjin: { query: "GLEC어학원 광진캠퍼스", phone: "02)446-0909" },
-    seongdong: { query: "GLEC어학원 성동캠퍼스", phone: "02)2294-0882" },
-    dongdaemun: { query: "GLEC어학원 동대문캠퍼스", phone: "02)2249-9009" },
-    jungnang: { query: "GLEC어학원 중랑캠퍼스", phone: "02)437-9800" },
-  },
-};
 
 function getSelectedCampus() {
   return database.campuses.find((campus) => campus.id === state.campusId);
@@ -110,12 +87,6 @@ function getSubjectContactType(subject) {
   return subject.id === "english" || subject.name === "영어" ? "english" : "math";
 }
 
-function getContactInfo() {
-  const subject = getSelectedSubject();
-  const contactType = getSubjectContactType(subject);
-  return campusContactDirectory[contactType]?.[state.campusId] || null;
-}
-
 function getSpecialTimesForDate(date) {
   const subject = getSelectedSubject();
   const contactType = getSubjectContactType(subject);
@@ -124,33 +95,6 @@ function getSpecialTimesForDate(date) {
   if (!specialDate) return null;
 
   return specialDate[contactType]?.[state.campusId] || [];
-}
-
-function getNaverMapSearchUrl(query) {
-  return `https://map.naver.com/p/search/${encodeURIComponent(query)}`;
-}
-
-function getTelUrl(phone) {
-  return `tel:${phone.replace(/\D/g, "")}`;
-}
-
-function updateCampusContact() {
-  const contact = getContactInfo();
-
-  if (!contact) {
-    campusContactPanel.hidden = true;
-    campusContactName.textContent = "";
-    campusContactPhone.textContent = "";
-    campusMapLink.href = "#";
-    campusCallLink.href = "#";
-    return;
-  }
-
-  campusContactName.textContent = contact.query;
-  campusContactPhone.textContent = contact.phone;
-  campusMapLink.href = getNaverMapSearchUrl(contact.query);
-  campusCallLink.href = getTelUrl(contact.phone);
-  campusContactPanel.hidden = false;
 }
 
 function updateSubmitButtonState() {
@@ -162,14 +106,21 @@ function loadJsonp(url) {
     const callbackName = `campusInfoCallback_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
     const script = document.createElement("script");
     const separator = url.includes("?") ? "&" : "?";
+    const timeoutId = window.setTimeout(() => {
+      delete window[callbackName];
+      script.remove();
+      reject(new Error("캠퍼스정보 응답 시간이 초과되었습니다."));
+    }, 5000);
 
     window[callbackName] = (data) => {
+      window.clearTimeout(timeoutId);
       delete window[callbackName];
       script.remove();
       resolve(data);
     };
 
     script.onerror = () => {
+      window.clearTimeout(timeoutId);
       delete window[callbackName];
       script.remove();
       reject(new Error("캠퍼스정보를 불러오지 못했습니다."));
@@ -456,7 +407,6 @@ campusSelect.addEventListener("change", (event) => {
   state.date = "";
   state.time = "";
   updateSubjectOptions();
-  updateCampusContact();
   renderCalendar();
   renderTimes();
   updateSummary();
@@ -466,7 +416,6 @@ subjectSelect.addEventListener("change", (event) => {
   state.subjectId = event.target.value;
   state.date = "";
   state.time = "";
-  updateCampusContact();
   renderCalendar();
   renderTimes();
   updateSummary();
@@ -512,7 +461,6 @@ applicationForm.addEventListener("submit", async (event) => {
     state.date = "";
     state.time = "";
     updateSubjectOptions();
-    updateCampusContact();
     updateSubmitButtonState();
     renderCalendar();
     renderTimes();
@@ -531,6 +479,13 @@ completeModal?.addEventListener("click", (event) => {
 
 
 async function boot() {
+  initCampusOptions();
+  updateSubjectOptions();
+  updateSubmitButtonState();
+  renderCalendar();
+  renderTimes();
+  updateSummary();
+
   try {
     await loadRemoteCampusOptions();
   } catch (error) {
@@ -539,8 +494,6 @@ async function boot() {
 
   initCampusOptions();
   updateSubjectOptions();
-  updateCampusContact();
-  updateSubmitButtonState();
   renderCalendar();
   renderTimes();
   updateSummary();
