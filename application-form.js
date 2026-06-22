@@ -67,6 +67,8 @@ const privacyAgree = document.querySelector("#privacyAgree");
 const submitButton = document.querySelector("#submitButton");
 const completeModal = document.querySelector("#completeModal");
 const completeCloseButton = document.querySelector("#completeCloseButton");
+const submitButtonDefaultHtml = submitButton.innerHTML;
+let isSubmitting = false;
 
 function getSelectedCampus() {
   return database.campuses.find((campus) => campus.id === state.campusId);
@@ -99,7 +101,13 @@ function getSpecialTimesForDate(date) {
 }
 
 function updateSubmitButtonState() {
-  submitButton.disabled = !privacyAgree.checked;
+  submitButton.disabled = isSubmitting || !privacyAgree.checked;
+}
+
+function setSubmitting(value) {
+  isSubmitting = value;
+  submitButton.innerHTML = value ? "신청 중..." : submitButtonDefaultHtml;
+  updateSubmitButtonState();
 }
 
 function loadJsonp(url) {
@@ -447,6 +455,10 @@ privacyAgree.addEventListener("change", updateSubmitButtonState);
 applicationForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  if (isSubmitting) {
+    return;
+  }
+
   if (!privacyAgree.checked) {
     submitStatus.textContent = "개인정보 수집 및 이용에 동의해 주세요.";
     return;
@@ -458,6 +470,7 @@ applicationForm.addEventListener("submit", async (event) => {
   }
 
   submitStatus.textContent = "신청 정보를 전송하고 있습니다.";
+  setSubmitting(true);
 
   try {
     submitStatus.textContent = await submitApplication(buildPayload(applicationForm));
@@ -474,6 +487,8 @@ applicationForm.addEventListener("submit", async (event) => {
     updateSummary();
   } catch (error) {
     submitStatus.textContent = error.message;
+  } finally {
+    setSubmitting(false);
   }
 });
 
