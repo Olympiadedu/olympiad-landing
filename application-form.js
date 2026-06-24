@@ -110,6 +110,20 @@ function setSubmitting(value) {
   updateSubmitButtonState();
 }
 
+function trackApplicationComplete(payload) {
+  if (typeof window.gtag !== "function") {
+    return;
+  }
+
+  window.gtag("event", "generate_lead", {
+    form_name: "학력진단평가 신청",
+    campus_id: payload.campusId,
+    campus_name: payload.campusName,
+    subject_id: payload.subjectId,
+    subject_name: payload.subjectName,
+  });
+}
+
 function loadJsonp(url) {
   return new Promise((resolve, reject) => {
     const callbackName = `campusInfoCallback_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
@@ -473,7 +487,9 @@ applicationForm.addEventListener("submit", async (event) => {
   setSubmitting(true);
 
   try {
-    submitStatus.textContent = await submitApplication(buildPayload(applicationForm));
+    const payload = buildPayload(applicationForm);
+    submitStatus.textContent = await submitApplication(payload);
+    trackApplicationComplete(payload);
     showCompletionModal();
     applicationForm.reset();
     state.campusId = "";
