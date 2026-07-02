@@ -48,8 +48,18 @@ const state = {
   subjectId: "",
   date: "",
   time: "",
-  monthIndex: 0,
+  monthIndex: getInitialMonthIndex(),
 };
+
+function getInitialMonthIndex() {
+  const today = new Date();
+  const currentKey = today.getFullYear() * 100 + today.getMonth() + 1;
+  const exactIndex = calendarMonths.findIndex(({ year, month }) => year * 100 + month === currentKey);
+
+  if (exactIndex >= 0) return exactIndex;
+  if (currentKey < calendarMonths[0].year * 100 + calendarMonths[0].month) return 0;
+  return calendarMonths.length - 1;
+}
 
 const campusSelect = document.querySelector("#campusSelect");
 const subjectSelect = document.querySelector("#subjectSelect");
